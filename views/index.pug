@@ -1,0 +1,76 @@
+doctype html
+html
+  head
+    title Video Call
+    style.
+      /* Center the video and button */
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: Arial, sans-serif;
+      }
+
+      #localVideo {
+        width: 80%;
+        max-width: 600px;
+        margin: 20px 0;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+
+      button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 20px;
+        font-size: 18px;
+        color: white;
+        background-color: #333; /* Changed to dark gray */
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      button:hover {
+        background-color: #555; /* Slightly lighter gray on hover */
+      }
+
+      button img {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+      }
+    script.
+      let localStream;
+
+      document.addEventListener('DOMContentLoaded', async () => {
+        const callId = '!{callId}';
+        console.log(`Starting call with ID: ${callId}`);
+
+        try {
+          localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+          const videoElement = document.getElementById('localVideo');
+          videoElement.srcObject = localStream;
+        } catch (error) {
+          console.error('Error accessing camera:', error);
+        }
+      });
+
+      function endCall() {
+        if (localStream) {
+          localStream.getTracks().forEach(track => track.stop());
+        }
+        document.getElementById('localVideo').srcObject = null;
+        alert('Call has been ended.');
+      }
+  body
+    h1 Video Call - Call ID: #{callId}
+    video#localVideo(autoplay playsinline)
+      | Your camera feed should appear here.
+
+    // Centered and styled "End Call" button with increased size
+    button(onclick="endCall()")
+      img(src="/end.svg" alt="End Call Icon")
+      | End Call
